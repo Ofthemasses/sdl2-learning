@@ -30,8 +30,20 @@ int main(int argc, char* argv[]){
         // Start our event loop
         while(SDL_PollEvent(&event)){
             // Handle each specific event
+            // Should be replaced with switch statement
             if(event.type == SDL_QUIT){
                 gameIsRunning = false;
+            }
+            if(event.type == SDL_MOUSEMOTION){
+                std::cout << "mouse has been moved\n";
+            }
+            if(event.type == SDL_KEYDOWN){
+                std::cout << "a key has been pressed\n";
+                if(event.key.keysym.sym == SDLK_0){
+                    std::cout << "0 was pressed\n";
+                } else {
+                    std::cout << "0 was not pressed\n";
+                }
             }
         }
     }
