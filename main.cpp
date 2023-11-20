@@ -16,6 +16,9 @@ int main(int argc, char* argv[]){
     // Create a window data type
     SDL_Window* window = nullptr;
 
+    // Grab the window surface
+    SDL_Surface* screen;
+
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cout << "SDL could not be initialized: " <<
             SDL_GetError();
@@ -23,12 +26,12 @@ int main(int argc, char* argv[]){
         std::cout << "SDL video system is ready to go\n";
     }
     // Before we create our window, specify OpenGL version
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    //SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    //SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     
     window = SDL_CreateWindow("C++ SDL2 Window",
             0,
@@ -37,16 +40,25 @@ int main(int argc, char* argv[]){
             480,
             SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
+    screen = SDL_GetWindowSurface(window);
+
+    SDL_Surface* image;
+    image = SDL_LoadBMP("./images/w3c_home.bmp");
+    SDL_BlitSurface(image,NULL,screen,NULL);
+    SDL_FreeSurface(image);
+    SDL_UpdateWindowSurface(window);
+    
+
     // OpenGL setup the graphics context
-    SDL_GLContext context;
-    context = SDL_GL_CreateContext(window);
+    //SDL_GLContext context;
+    //context = SDL_GL_CreateContext(window);
 
     // Setup function pointers
-    gladLoadGLLoader(SDL_GL_GetProcAddress);
+    //gladLoadGLLoader(SDL_GL_GetProcAddress);
 
     bool gameIsRunning = true;
     while(gameIsRunning){
-        glViewport(0,0,640,480);
+        //glViewport(0,0,640,480);
         
         SDL_Event event;
         // Start our event loop
@@ -73,10 +85,10 @@ int main(int argc, char* argv[]){
             }
         }
 
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        //glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+        //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        SDL_GL_SwapWindow(window);
+        //SDL_GL_SwapWindow(window);
 
     }
     SDL_DestroyWindow(window);
