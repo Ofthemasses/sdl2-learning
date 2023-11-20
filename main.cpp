@@ -24,7 +24,17 @@ int main(int argc, char* argv[]){
             480,
             SDL_WINDOW_SHOWN);
 
-    SDL_Delay(30000);
+    bool gameIsRunning = true;
+    while(gameIsRunning){
+        SDL_Event event;
+        // Start our event loop
+        while(SDL_PollEvent(&event)){
+            // Handle each specific event
+            if(event.type == SDL_QUIT){
+                gameIsRunning = false;
+            }
+        }
+    }
 
     SDL_DestroyWindow(window);
 
