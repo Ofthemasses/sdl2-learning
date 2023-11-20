@@ -16,7 +16,7 @@ int main(int argc, char* argv[]){
     } else {
         std::cout << "SDL video system is ready to go\n";
     }
-
+    
     window = SDL_CreateWindow("C++ SDL2 Window",
             0,
             0,
@@ -45,9 +45,12 @@ int main(int argc, char* argv[]){
                     std::cout << "0 was not pressed\n";
                 }
             }
+            const Uint8* state = SDL_GetKeyboardState(NULL);
+            if(state[SDL_SCANCODE_RIGHT]){
+                std::cout << "right arrow key is being pressed\n";
+            }
         }
     }
-
     SDL_DestroyWindow(window);
 
     SDL_Quit();
