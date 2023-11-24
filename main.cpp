@@ -49,13 +49,15 @@ int main(int argc, char* argv[]){
             480,
             SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
-    screen = SDL_GetWindowSurface(window);
+    SDL_Renderer* renderer = nullptr;
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    //screen = SDL_GetWindowSurface(window);
 
-    SDL_Surface* image;
-    image = SDL_LoadBMP("./images/w3c_home.bmp");
-    SDL_BlitSurface(image,NULL,screen,NULL);
-    SDL_FreeSurface(image);
-    SDL_UpdateWindowSurface(window);
+    //SDL_Surface* image;
+    //image = SDL_LoadBMP("./images/w3c_home.bmp");
+    //SDL_BlitSurface(image,NULL,screen,NULL);
+    //SDL_FreeSurface(image);
+    //SDL_UpdateWindowSurface(window);
     
 
     // OpenGL setup the graphics context
@@ -65,6 +67,12 @@ int main(int argc, char* argv[]){
     // Setup function pointers
     //gladLoadGLLoader(SDL_GL_GetProcAddress);
 
+    // Create a rectangle
+    SDL_Rect rectangle;
+    rectangle.x = 50;
+    rectangle.y = 100;
+    rectangle.w = 20;
+    rectangle.h = 20;
     bool gameIsRunning = true;
     while(gameIsRunning){
         //glViewport(0,0,640,480);
@@ -81,12 +89,24 @@ int main(int argc, char* argv[]){
             if(event.type == SDL_QUIT){
                 gameIsRunning = false;
             }
-            if(event.button.button == SDL_BUTTON_LEFT){
-               SetPixel(screen, x, y, 255, 0 ,0);
-            }
-            if(event.button.button == SDL_BUTTON_RIGHT){
-               SetPixel(screen, x, y, 0 , 0, 255);
-            }
+//            if(event.button.button == SDL_BUTTON_LEFT){
+//               SetPixel(screen, x, y, 255, 0 ,0);
+//            }
+//            if(event.button.button == SDL_BUTTON_RIGHT){
+//               SetPixel(screen, x, y, 0 , 0, 255);
+//            }
+                
+            // Give us a clear "canvas"
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+            SDL_RenderClear(renderer);
+
+            // Do our drawing
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+            SDL_RenderDrawLine(renderer, 5, 5, 100, 120);
+            SDL_RenderDrawRect(renderer,&rectangle);
+
+            // Finally show what we've drawn
+            SDL_RenderPresent(renderer);
        }
 
        SDL_UpdateWindowSurface(window);
