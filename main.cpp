@@ -52,7 +52,13 @@ int main(int argc, char* argv[]){
     SDL_Renderer* renderer = nullptr;
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    SDL_Surface* surface = SDL_LoadBMP("./images/w3c_home.bmp");
+    SDL_Surface* surface = SDL_LoadBMP("./images/63b0dbdcdc45a0b.bmp"); // Donkey Kong
+
+    // It is best to add this after loading the surface as you are shipping the data
+    // to the GPU.
+    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0xFF, 0, 0XFF));
+
+
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
     SDL_FreeSurface(surface);
@@ -102,7 +108,7 @@ int main(int argc, char* argv[]){
 //            }
                 
             // Give us a clear "canvas"
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0xFF, SDL_ALPHA_OPAQUE);
             SDL_RenderClear(renderer);
 
             // Do our drawing
