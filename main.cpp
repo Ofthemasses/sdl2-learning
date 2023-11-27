@@ -84,6 +84,13 @@ int main(int argc, char* argv[]){
     rectangle.y = 100;
     rectangle.w = 200;
     rectangle.h = 200;
+
+    SDL_Rect rectangle2;
+    rectangle2.x = 50;
+    rectangle2.y = 100;
+    rectangle2.w = 200;
+    rectangle2.h = 200;
+
     bool gameIsRunning = true;
     while(gameIsRunning){
         //glViewport(0,0,640,480);
@@ -100,27 +107,41 @@ int main(int argc, char* argv[]){
             if(event.type == SDL_QUIT){
                 gameIsRunning = false;
             }
-//            if(event.button.button == SDL_BUTTON_LEFT){
-//               SetPixel(screen, x, y, 255, 0 ,0);
-//            }
-//            if(event.button.button == SDL_BUTTON_RIGHT){
-//               SetPixel(screen, x, y, 0 , 0, 255);
-//            }
-                
-            // Give us a clear "canvas"
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0xFF, SDL_ALPHA_OPAQUE);
-            SDL_RenderClear(renderer);
+            if(event.type == SDL_MOUSEMOTION){
+                rectangle2.x = event.motion.x;
+                rectangle2.y = event.motion.y;
+            }
+            if(event.type == SDL_MOUSEBUTTONDOWN){
+                if(event.button.button == SDL_BUTTON_LEFT){
+                    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_ADD);
+                }
+                else if(event.button.button == SDL_BUTTON_RIGHT){
+                    SDL_SetTextureBlendMode(texture,SDL_BLENDMODE_MOD);
+                }
+            }
+            else {
+                SDL_SetTextureBlendMode(texture,SDL_BLENDMODE_BLEND);
+            }
 
-            // Do our drawing
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-            SDL_RenderDrawLine(renderer, 5, 5, 100, 120);
-            
-            // SDL_RenderDrawRect(renderer,&rectangle);
-            SDL_RenderCopy(renderer, texture, NULL, &rectangle);
-
-            // Finally show what we've drawn
-            SDL_RenderPresent(renderer);
+//          if(event.button.button == SDL_BUTTON_RIGHT){
+//              SetPixel(screen, x, y, 0 , 0, 255);
+//          }
        }
+                
+       // Give us a clear "canvas"
+       SDL_SetRenderDrawColor(renderer, 0, 0, 0xFF, SDL_ALPHA_OPAQUE);
+       SDL_RenderClear(renderer);
+
+       // Do our drawing
+       SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+       SDL_RenderDrawLine(renderer, 5, 5, 300, 300);
+       
+       // SDL_RenderDrawRect(renderer,&rectangle);
+       SDL_RenderCopy(renderer, texture, NULL, &rectangle);
+       SDL_RenderCopy(renderer, texture, NULL, &rectangle2);
+
+       // Finally show what we've drawn
+       SDL_RenderPresent(renderer);
 
        SDL_UpdateWindowSurface(window);
 
