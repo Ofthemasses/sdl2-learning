@@ -51,6 +51,11 @@ int main(int argc, char* argv[]){
 
     SDL_Renderer* renderer = nullptr;
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    SDL_Surface* surface = SDL_LoadBMP("./images/w3c_home.bmp");
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    SDL_FreeSurface(surface);
     //screen = SDL_GetWindowSurface(window);
 
     //SDL_Surface* image;
@@ -71,8 +76,8 @@ int main(int argc, char* argv[]){
     SDL_Rect rectangle;
     rectangle.x = 50;
     rectangle.y = 100;
-    rectangle.w = 20;
-    rectangle.h = 20;
+    rectangle.w = 200;
+    rectangle.h = 200;
     bool gameIsRunning = true;
     while(gameIsRunning){
         //glViewport(0,0,640,480);
@@ -103,7 +108,9 @@ int main(int argc, char* argv[]){
             // Do our drawing
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
             SDL_RenderDrawLine(renderer, 5, 5, 100, 120);
-            SDL_RenderDrawRect(renderer,&rectangle);
+            
+            // SDL_RenderDrawRect(renderer,&rectangle);
+            SDL_RenderCopy(renderer, texture, NULL, &rectangle);
 
             // Finally show what we've drawn
             SDL_RenderPresent(renderer);
@@ -117,6 +124,9 @@ int main(int argc, char* argv[]){
         //SDL_GL_SwapWindow(window);
 
     }
+
+    SDL_DestroyTexture(texture);
+    
     SDL_DestroyWindow(window);
 
     SDL_Quit();
