@@ -52,7 +52,8 @@ int main(int argc, char* argv[]){
     SDL_Renderer* renderer = nullptr;
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    SDL_Surface* surface = SDL_LoadBMP("./images/water1.bmp"); // Donkey Kong
+    SDL_Surface* surface = SDL_LoadBMP("./images/water1.bmp");
+    SDL_Surface* surface2 = SDL_LoadBMP("./images/water2.bmp");
 
     // It is best to add this after loading the surface as you are shipping the data
     // to the GPU.
@@ -60,7 +61,7 @@ int main(int argc, char* argv[]){
 
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Texture* texture2 = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Texture* texture2 = SDL_CreateTextureFromSurface(renderer, surface2);
 
     SDL_FreeSurface(surface);
     //screen = SDL_GetWindowSurface(window);
@@ -126,7 +127,7 @@ int main(int argc, char* argv[]){
 //            }
             if(event.type == SDL_MOUSEBUTTONDOWN){
                 if(event.button.button == SDL_BUTTON_LEFT){
-                    SDL_SetTextureBlendMode(texture2, SDL_BLENDMODE_NONE);
+                    SDL_SetTextureBlendMode(texture2, SDL_BLENDMODE_ADD);
                 }
                 else if(event.button.button == SDL_BUTTON_RIGHT){
                     SDL_SetTextureBlendMode(texture2,SDL_BLENDMODE_BLEND);
@@ -150,20 +151,20 @@ int main(int argc, char* argv[]){
        // Change this at some point, it is a hack to slow down the sim
        SDL_Delay(20);
 
-       rectangle.x++;
+       rectangle.x ++;
        if (rectangle.x > 639){
            rectangle.x = -639;
        }
-       rectangle2.x++;
+       rectangle2.x ++;
        if (rectangle2.x > 639){
            rectangle2.x = -639;
        }
 
-       rectangle3.y++;
+       rectangle3.y ++;
        if (rectangle3.y > 479){
            rectangle3.y = -480;
        }
-       rectangle4.y++;
+       rectangle4.y ++;
        if (rectangle4.y > 479){
            rectangle4.y = -480;
        }
