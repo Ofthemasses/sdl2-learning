@@ -1,11 +1,14 @@
 // Comp command
-// g++ main.cpp glad/src/glad.c -I./glad/include -o prog -lSDL2 -ldl
+// g++ main.cpp glad/src/glad.c -I./glad/include -o prog -lSDL2 -lSDL2_ttf -ldl
 
 // C++ Standard Libraries
 #include <iostream>
 
 // Third-party library
 #include <SDL2/SDL.h>
+
+// Include Font Library
+#include <SDL2/SDL_ttf.h>
 
 // Include GLAD
 #include <glad/glad.h>
@@ -52,6 +55,23 @@ int main(int argc, char* argv[]){
     SDL_Renderer* renderer = nullptr;
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+    if (TTF_Init() == 1){
+        std::cout << "Could not initialize SDL2 ttf, error: "
+           << TTF_GetError()
+           << std::endl;
+    } else {
+        std::cout << "SDL2_ttf system ready to go!" << std::endl;
+    }
+
+    TTF_Font* ourFont = TTF_OpenFont("./fonts/Fira_Code/FiraCode-VariableFont_wght.ttf", 32);
+
+    if(ourFont == nullptr){
+        std::cout << "Could not load font" << std::endl;
+        exit(1);
+    }
+
+    SDL_Surface* surfaceText = TTF_RenderText_Solid(ourFont, "Testing TTF Rendering",
+            {255,255,255});
     SDL_Surface* surface = SDL_LoadBMP("./images/water1.bmp");
     SDL_Surface* surface2 = SDL_LoadBMP("./images/water2.bmp");
 
@@ -60,10 +80,13 @@ int main(int argc, char* argv[]){
     // SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0xFF, 0, 0XFF));
 
 
+    SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Texture* texture2 = SDL_CreateTextureFromSurface(renderer, surface2);
 
+    SDL_FreeSurface(surfaceText);
     SDL_FreeSurface(surface);
+    SDL_FreeSurface(surface2);
     //screen = SDL_GetWindowSurface(window);
 
     //SDL_Surface* image;
@@ -104,6 +127,12 @@ int main(int argc, char* argv[]){
     rectangle4.y = -480;
     rectangle4.w = 640;
     rectangle4.h = 480;
+
+    SDL_Rect textRect;
+    textRect.x = 42;
+    textRect.y = 42;
+    textRect.w = 512;
+    textRect.h = 64;
 
     bool gameIsRunning = true;
     while(gameIsRunning){
@@ -151,20 +180,20 @@ int main(int argc, char* argv[]){
        // Change this at some point, it is a hack to slow down the sim
        SDL_Delay(20);
 
-       rectangle.x ++;
+       rectangle.x++;
        if (rectangle.x > 639){
            rectangle.x = -639;
        }
-       rectangle2.x ++;
+       rectangle2.x++;
        if (rectangle2.x > 639){
            rectangle2.x = -639;
        }
 
-       rectangle3.y ++;
+       rectangle3.y++;
        if (rectangle3.y > 479){
            rectangle3.y = -480;
        }
-       rectangle4.y ++;
+       rectangle4.y++;
        if (rectangle4.y > 479){
            rectangle4.y = -480;
        }
@@ -179,6 +208,7 @@ int main(int argc, char* argv[]){
 
        SDL_RenderCopy(renderer, texture2, NULL, &rectangle3);
        SDL_RenderCopy(renderer, texture2, NULL, &rectangle4);
+       SDL_RenderCopy(renderer, textureText, NULL, &textRect);
        // Finally show what we've drawn
        SDL_RenderPresent(renderer);
 
@@ -192,6 +222,8 @@ int main(int argc, char* argv[]){
     }
 
     SDL_DestroyTexture(texture);
+    SDL_DestroyTexture(texture2);
+    SDL_DestroyTexture(textureText);
     
     SDL_DestroyWindow(window);
 
