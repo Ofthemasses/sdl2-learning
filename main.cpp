@@ -1,5 +1,5 @@
 // Comp command
-// g++ main.cpp glad/src/glad.c -I./glad/include -o prog -lSDL2 -lSDL2_ttf -ldl
+// g++ main.cpp TexturedRectangle.cpp glad/src/glad.c -I./glad/include -o prog -lSDL2 -lSDL2_ttf -ldl
 
 // C++ Standard Libraries
 #include <iostream>
@@ -13,6 +13,8 @@
 // Include GLAD
 #include <glad/glad.h>
 
+#include "TexturedRectangle.hpp"
+
 void SetPixel(SDL_Surface* surface, unsigned int x, unsigned int y, uint8_t r, uint8_t g, uint8_t b){
     SDL_LockSurface(surface);
     std::cout << "left mouse was pressed (" << x << "," << y << ")\n";
@@ -22,6 +24,7 @@ void SetPixel(SDL_Surface* surface, unsigned int x, unsigned int y, uint8_t r, u
     pixels[y*surface->pitch + x*surface->format->BytesPerPixel + 2] = r;
     SDL_UnlockSurface(surface);
 }
+
 
 int main(int argc, char* argv[]){
 
@@ -63,7 +66,7 @@ int main(int argc, char* argv[]){
         std::cout << "SDL2_ttf system ready to go!" << std::endl;
     }
 
-    TTF_Font* ourFont = TTF_OpenFont("./fonts/Fira_Code/FiraCode-VariableFont_wght.ttf", 32);
+    TTF_Font* ourFont = TTF_OpenFont("./fonts/Fira_Code/FiraCode-VariableFont_wght.ttf", 128);
 
     if(ourFont == nullptr){
         std::cout << "Could not load font" << std::endl;
@@ -72,21 +75,26 @@ int main(int argc, char* argv[]){
 
     SDL_Surface* surfaceText = TTF_RenderText_Solid(ourFont, "Testing TTF Rendering",
             {255,255,255});
-    SDL_Surface* surface = SDL_LoadBMP("./images/water1.bmp");
-    SDL_Surface* surface2 = SDL_LoadBMP("./images/water2.bmp");
 
     // It is best to add this after loading the surface as you are shipping the data
     // to the GPU.
     // SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0xFF, 0, 0XFF));
 
+    TexturedRectangle rectangle(*renderer, "./images/water1.bmp");
+    rectangle.SetRectangleProperties(0,0,640,480);
+    
+    TexturedRectangle rectangle2(*renderer, "./images/water1.bmp");
+    rectangle2.SetRectangleProperties(-639, 0, 640, 480);
+
+    
+    TexturedRectangle rectangle3(*renderer, "./images/water2.bmp");
+    rectangle3.SetRectangleProperties(0,0,640,480);
+
+    TexturedRectangle rectangle4(*renderer, "./images/water2.bmp");
+    rectangle4.SetRectangleProperties(0,-480,640,480);
 
     SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Texture* texture2 = SDL_CreateTextureFromSurface(renderer, surface2);
-
     SDL_FreeSurface(surfaceText);
-    SDL_FreeSurface(surface);
-    SDL_FreeSurface(surface2);
     //screen = SDL_GetWindowSurface(window);
 
     //SDL_Surface* image;
@@ -104,30 +112,7 @@ int main(int argc, char* argv[]){
     //gladLoadGLLoader(SDL_GL_GetProcAddress);
 
     // Create a rectangle
-    SDL_Rect rectangle;
-    rectangle.x = 0;
-    rectangle.y = 0;
-    rectangle.w = 640;
-    rectangle.h = 480;
-
-    SDL_Rect rectangle2;
-    rectangle2.x = -639;
-    rectangle2.y = 0;
-    rectangle2.w = 640;
-    rectangle2.h = 480;
-
-    SDL_Rect rectangle3;
-    rectangle3.x = 0;
-    rectangle3.y = 0;
-    rectangle3.w = 640;
-    rectangle3.h = 480;
-
-    SDL_Rect rectangle4;
-    rectangle4.x = 0;
-    rectangle4.y = -480;
-    rectangle4.w = 640;
-    rectangle4.h = 480;
-
+    
     SDL_Rect textRect;
     textRect.x = 42;
     textRect.y = 42;
@@ -156,14 +141,17 @@ int main(int argc, char* argv[]){
 //            }
             if(event.type == SDL_MOUSEBUTTONDOWN){
                 if(event.button.button == SDL_BUTTON_LEFT){
-                    SDL_SetTextureBlendMode(texture2, SDL_BLENDMODE_ADD);
+                    rectangle3.SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
+                    rectangle4.SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
                 }
                 else if(event.button.button == SDL_BUTTON_RIGHT){
-                    SDL_SetTextureBlendMode(texture2,SDL_BLENDMODE_BLEND);
+                    rectangle3.SetBlendMode(*renderer, SDL_BLENDMODE_BLEND);
+                    rectangle4.SetBlendMode(*renderer, SDL_BLENDMODE_BLEND);
                 }
             }
             else {
-                SDL_SetTextureBlendMode(texture2,SDL_BLENDMODE_MOD);
+                rectangle3.SetBlendMode(*renderer, SDL_BLENDMODE_MOD);
+                rectangle4.SetBlendMode(*renderer, SDL_BLENDMODE_MOD);
             }
 
 //          if(event.button.button == SDL_BUTTON_RIGHT){
@@ -175,39 +163,37 @@ int main(int argc, char* argv[]){
        SDL_SetRenderDrawColor(renderer, 0, 0, 0xFF, SDL_ALPHA_OPAQUE);
        SDL_RenderClear(renderer);
 
-       int w,h;
-       SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+       // int w,h;
+       // SDL_QueryTexture(texture, NULL, NULL, &w, &h);
        // Change this at some point, it is a hack to slow down the sim
        SDL_Delay(20);
 
-       rectangle.x++;
-       if (rectangle.x > 639){
-           rectangle.x = -639;
+       rectangle.SetX(rectangle.GetX()+1+1/3);
+       if (rectangle.GetX() > 639){
+           rectangle.SetX(-639);
        }
-       rectangle2.x++;
-       if (rectangle2.x > 639){
-           rectangle2.x = -639;
+       rectangle2.SetX(rectangle2.GetX()+1+1/3);
+       if (rectangle2.GetX() > 639){
+           rectangle2.SetX(-639);
        }
 
-       rectangle3.y++;
-       if (rectangle3.y > 479){
-           rectangle3.y = -480;
+       rectangle3.SetY(rectangle3.GetY()+1);
+       if (rectangle3.GetY() > 479){
+           rectangle3.SetY(-480);
        }
-       rectangle4.y++;
-       if (rectangle4.y > 479){
-           rectangle4.y = -480;
+       rectangle4.SetY(rectangle4.GetY()+1);
+       if (rectangle4.GetY() > 479){
+           rectangle4.SetY(-480);
        }
        // Do our drawing
        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
        SDL_RenderDrawLine(renderer, 5, 5, 300, 300);
        
        // SDL_RenderDrawRect(renderer,&rectangle);
-       SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
-       SDL_RenderCopy(renderer, texture, NULL, &rectangle);
-       SDL_RenderCopy(renderer, texture, NULL, &rectangle2);
-
-       SDL_RenderCopy(renderer, texture2, NULL, &rectangle3);
-       SDL_RenderCopy(renderer, texture2, NULL, &rectangle4);
+       rectangle.Render(*renderer);
+       rectangle2.Render(*renderer);
+       rectangle3.Render(*renderer);
+       rectangle4.Render(*renderer);
        SDL_RenderCopy(renderer, textureText, NULL, &textRect);
        // Finally show what we've drawn
        SDL_RenderPresent(renderer);
@@ -221,8 +207,6 @@ int main(int argc, char* argv[]){
 
     }
 
-    SDL_DestroyTexture(texture);
-    SDL_DestroyTexture(texture2);
     SDL_DestroyTexture(textureText);
     
     SDL_DestroyWindow(window);
