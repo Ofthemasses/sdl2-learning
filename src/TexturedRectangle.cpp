@@ -1,13 +1,15 @@
 #include <string>
+#include <iostream>
 
 #include <SDL2/SDL.h>
 
 #include "TexturedRectangle.hpp"
+#include "ResourceManager.hpp"
 
 TexturedRectangle::TexturedRectangle(SDL_Renderer& renderer, std::string filepath){
-    SDL_Surface* surface = SDL_LoadBMP(filepath.c_str());
+    SDL_Surface* surface = ResourceManager::GetInstance().GetSurface(filepath);
     m_texture = SDL_CreateTextureFromSurface(&renderer, surface);
-    SDL_FreeSurface(surface);
+    // Resource Manager should Free Resources
 }
 TexturedRectangle::~TexturedRectangle(){
     SDL_DestroyTexture(m_texture);
