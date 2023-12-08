@@ -14,6 +14,7 @@
 // #include <glad/glad.h>
 
 #include "TexturedRectangle.hpp"
+#include "AnimatedSprite.hpp"
 
 void SetPixel(SDL_Surface* surface, unsigned int x, unsigned int y, uint8_t r, uint8_t g, uint8_t b){
     SDL_LockSurface(surface);
@@ -95,6 +96,9 @@ int main(int argc, char* argv[]){
 
     SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
     SDL_FreeSurface(surfaceText);
+
+    AnimatedSprite animatedSprite(renderer, "./assets/images/Mage.bmp"); 
+    animatedSprite.Draw(576,416,64,64);
     //screen = SDL_GetWindowSurface(window);
 
     //SDL_Surface* image;
@@ -187,19 +191,26 @@ int main(int argc, char* argv[]){
        }
        // Do our drawing
        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-       SDL_RenderDrawLine(renderer, 5, 5, 300, 300);
-       
+
        // SDL_RenderDrawRect(renderer,&rectangle);
        rectangle.Render(*renderer);
        rectangle2.Render(*renderer);
        rectangle3.Render(*renderer);
        rectangle4.Render(*renderer);
        SDL_RenderCopy(renderer, textureText, NULL, &textRect);
+
+       static int frameNumber = 0;
+
+       animatedSprite.PlayFrame(0,0,64,64,frameNumber);
+       animatedSprite.Render(renderer);
+       frameNumber = (frameNumber + 1) % 7;
+
        // Finally show what we've drawn
        SDL_RenderPresent(renderer);
 
        SDL_UpdateWindowSurface(window);
 
+       SDL_Delay(50);
         //glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
         //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
