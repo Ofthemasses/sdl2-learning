@@ -52,6 +52,11 @@ void TexturedRectangle::SetBlendMode(SDL_Renderer& renderer, SDL_BlendMode bm){
 
 void TexturedRectangle::Update(){}
 
+SDL_bool TexturedRectangle::IsColliding(TexturedRectangle& obj){
+    const SDL_Rect temp = obj.GetRectangle();
+    return SDL_HasIntersection(&m_rectangle, &temp);
+}
+
 void TexturedRectangle::Render(SDL_Renderer& renderer){
     SDL_RenderCopy(&renderer, m_texture, NULL, &m_rectangle);
 }

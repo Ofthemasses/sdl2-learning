@@ -26,9 +26,12 @@ class TexturedRectangle{
 
         void Update();
 
+        SDL_bool IsColliding(TexturedRectangle& obj);
+
         void Render(SDL_Renderer& renderer);
 
     private:
+       inline SDL_Rect GetRectangle() const { return m_rectangle; }
        SDL_Rect m_rectangle;
        SDL_Texture* m_texture;
 };

@@ -94,11 +94,19 @@ int main(int argc, char* argv[]){
     TexturedRectangle rectangle4(*renderer, "./assets/images/water2.bmp");
     rectangle4.SetRectangleProperties(0,-480,640,480);
 
+    TexturedRectangle redRec(*renderer, "./assets/images/Red.bmp");
+    redRec.SetRectangleProperties(300,220,40,40);
+
+    TexturedRectangle redRec2(*renderer, "./assets/images/Red.bmp");
+    redRec2.SetRectangleProperties(0,0,40,40);
+
     SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
     SDL_FreeSurface(surfaceText);
 
     AnimatedSprite animatedSprite(renderer, "./assets/images/Mage.bmp"); 
     animatedSprite.Draw(576,416,64,64);
+
+
     //screen = SDL_GetWindowSurface(window);
 
     //SDL_Surface* image;
@@ -192,11 +200,19 @@ int main(int argc, char* argv[]){
        // Do our drawing
        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
+       redRec2.SetX(x);
+       redRec2.SetY(y);
+
+       if (redRec.IsColliding(redRec2)){
+           std::cout << "redRec is colliding with redRec2" << std::endl;
+       }
        // SDL_RenderDrawRect(renderer,&rectangle);
        rectangle.Render(*renderer);
        rectangle2.Render(*renderer);
        rectangle3.Render(*renderer);
        rectangle4.Render(*renderer);
+       redRec.Render(*renderer);
+       redRec2.Render(*renderer);
        SDL_RenderCopy(renderer, textureText, NULL, &textRect);
 
        static int frameNumber = 0;
