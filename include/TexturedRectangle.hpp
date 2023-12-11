@@ -1,3 +1,6 @@
+#ifndef TEXTUREDRECTANGLE_HPP
+#define TEXTUREDRECTANGLE_HPP
+
 #include <string>
 
 #include <SDL2/SDL.h>
@@ -35,3 +38,5 @@ class TexturedRectangle{
        SDL_Rect m_rectangle;
        SDL_Texture* m_texture;
 };
+
+#endif

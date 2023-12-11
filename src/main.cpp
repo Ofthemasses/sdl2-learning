@@ -15,6 +15,7 @@
 
 #include "TexturedRectangle.hpp"
 #include "AnimatedSprite.hpp"
+#include "GameEntity.hpp"
 #include "SDLApp.hpp"
 
 // One possibility of creating as a global our app
@@ -23,15 +24,15 @@ SDLApp* app;
 // Create objects to render
 // Eventually, we will want some sort of factory
 // to manage object creation in our App..
-TexturedRectangle* rectangle;
-TexturedRectangle* rectangle2;
-TexturedRectangle* rectangle3;
-TexturedRectangle* rectangle4;
-TexturedRectangle* redRec;
-TexturedRectangle* redRec2;
+GameEntity* rectangle;
+GameEntity* rectangle2;
+GameEntity* rectangle3;
+GameEntity* rectangle4;
+GameEntity* redRec;
+GameEntity* redRec2;
 SDL_Texture* textureText;
 SDL_Rect textRect;
-AnimatedSprite* animatedSprite;
+AnimatedSprite* animatedSprite; // TODO Create abstraction for multiple texture types be hooked into GameEntities
 
 void SetPixel(SDL_Surface* surface, unsigned int x, unsigned int y, uint8_t r, uint8_t g, uint8_t b){
     SDL_LockSurface(surface);
@@ -54,17 +55,17 @@ void HandleEvents(){
         }
         if(event.type == SDL_MOUSEBUTTONDOWN){
             if(event.button.button == SDL_BUTTON_LEFT){
-                rectangle3->SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
-                rectangle4->SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
+                rectangle3->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
+                rectangle4->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
             }
             else if(event.button.button == SDL_BUTTON_RIGHT){
-                rectangle3->SetBlendMode(*renderer, SDL_BLENDMODE_BLEND);
-                rectangle4->SetBlendMode(*renderer, SDL_BLENDMODE_BLEND);
+                rectangle3->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_BLEND);
+                rectangle4->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_BLEND);
             }
         }
         else {
-            rectangle3->SetBlendMode(*renderer, SDL_BLENDMODE_MOD);
-            rectangle4->SetBlendMode(*renderer, SDL_BLENDMODE_MOD);
+            rectangle3->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_MOD);
+            rectangle4->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_MOD);
         }
     }
 }
@@ -81,39 +82,39 @@ void HandleRendering(){
     // Change this at some point, it is a hack to slow down the sim
     SDL_Delay(20);
 
-    rectangle->SetX(rectangle->GetX()+1+1/3);
-    if (rectangle->GetX() > 639){
-        rectangle->SetX(-639);
+    rectangle->GetSprite()->SetX(rectangle->GetSprite()->GetX()+1+1/3);
+    if (rectangle->GetSprite()->GetX() > 639){
+        rectangle->GetSprite()->SetX(-639);
     }
-    rectangle2->SetX(rectangle2->GetX()+1+1/3);
-    if (rectangle2->GetX() > 639){
-        rectangle2->SetX(-639);
+    rectangle2->GetSprite()->SetX(rectangle2->GetSprite()->GetX()+1+1/3);
+    if (rectangle2->GetSprite()->GetX() > 639){
+        rectangle2->GetSprite()->SetX(-639);
     }
 
-    rectangle3->SetY(rectangle3->GetY()+1);
-    if (rectangle3->GetY() > 479){
-        rectangle3->SetY(-480);
+    rectangle3->GetSprite()->SetY(rectangle3->GetSprite()->GetY()+1);
+    if (rectangle3->GetSprite()->GetY() > 479){
+        rectangle3->GetSprite()->SetY(-480);
     }
-    rectangle4->SetY(rectangle4->GetY()+1);
-    if (rectangle4->GetY() > 479){
-        rectangle4->SetY(-480);
+    rectangle4->GetSprite()->SetY(rectangle4->GetSprite()->GetY()+1);
+    if (rectangle4->GetSprite()->GetY() > 479){
+        rectangle4->GetSprite()->SetY(-480);
     }
     // Do our drawing
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
-    redRec2->SetX(app->GetMouseX());
-    redRec2->SetY(app->GetMouseY());
+    redRec2->GetSprite()->SetX(app->GetMouseX());
+    redRec2->GetSprite()->SetY(app->GetMouseY());
 
-    if (redRec->IsColliding(*redRec2)){
+    if (redRec->GetSprite()->IsColliding(*redRec2->GetSprite())){
         std::cout << "redRec is colliding with redRec2" << std::endl;
     }
     // SDL_RenderDrawRect(renderer,&rectangle);
-    rectangle->Render(*renderer);
-    rectangle2->Render(*renderer);
-    rectangle3->Render(*renderer);
-    rectangle4->Render(*renderer);
-    redRec->Render(*renderer);
-    redRec2->Render(*renderer);
+    rectangle->GetSprite()->Render(*renderer);
+    rectangle2->GetSprite()->Render(*renderer);
+    rectangle3->GetSprite()->Render(*renderer);
+    rectangle4->GetSprite()->Render(*renderer);
+    redRec->GetSprite()->Render(*renderer);
+    redRec2->GetSprite()->Render(*renderer);
     SDL_RenderCopy(renderer, textureText, NULL, &textRect);
 
     static int frameNumber = 0;
@@ -154,24 +155,24 @@ int main(int argc, char* argv[]){
     // to the GPU.
     // SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0xFF, 0, 0XFF));
 
-    rectangle = new TexturedRectangle(*renderer, "./assets/images/water1.bmp");
-    rectangle->SetRectangleProperties(0,0,640,480);
+    rectangle = new GameEntity(renderer, "./assets/images/water1.bmp");
+    rectangle->GetSprite()->SetRectangleProperties(0,0,640,480);
     
-    rectangle2 = new TexturedRectangle(*renderer, "./assets/images/water1.bmp");
-    rectangle2->SetRectangleProperties(-639, 0, 640, 480);
+    rectangle2 = new GameEntity(renderer, "./assets/images/water1.bmp");
+    rectangle2->GetSprite()->SetRectangleProperties(-639, 0, 640, 480);
 
     
-    rectangle3 = new TexturedRectangle(*renderer, "./assets/images/water2.bmp");
-    rectangle3->SetRectangleProperties(0,0,640,480);
+    rectangle3 = new GameEntity(renderer, "./assets/images/water2.bmp");
+    rectangle3->GetSprite()->SetRectangleProperties(0,0,640,480);
 
-    rectangle4 = new TexturedRectangle(*renderer, "./assets/images/water2.bmp");
-    rectangle4->SetRectangleProperties(0,-480,640,480);
+    rectangle4 = new GameEntity(renderer, "./assets/images/water2.bmp");
+    rectangle4->GetSprite()->SetRectangleProperties(0,-480,640,480);
 
-    redRec = new TexturedRectangle(*renderer, "./assets/images/Red.bmp");
-    redRec->SetRectangleProperties(300,220,40,40);
+    redRec = new GameEntity(renderer, "./assets/images/Red.bmp");
+    redRec->GetSprite()->SetRectangleProperties(300,220,40,40);
 
-    redRec2 = new TexturedRectangle(*renderer, "./assets/images/Red.bmp");
-    redRec2->SetRectangleProperties(0,0,40,40);
+    redRec2 = new GameEntity(renderer, "./assets/images/Red.bmp");
+    redRec2->GetSprite()->SetRectangleProperties(0,0,40,40);
 
     textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
     SDL_FreeSurface(surfaceText);
