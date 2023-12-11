@@ -2,6 +2,11 @@
 #include <iostream>
 
 SDLApp::SDLApp(const char* title, int x, int y, int w, int h){
+    m_width = w;
+    m_height = h;
+
+    m_maxFrameRate = 90;
+
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cout << "SDL could not be initialized: " <<
         SDL_GetError();
@@ -35,11 +40,22 @@ void SDLApp::SetRenderCallback(std::function<void(void)> func){
 
 void SDLApp::RunLoop(){
     while(m_gameIsRunning){
+        Uint32 start = SDL_GetTicks();
         Uint32 buttons;
         buttons = SDL_GetMouseState(&m_mouseX, &m_mouseY);
         m_EventCallback();
         m_RenderCallback(); 
+        // Frame Capping (Hard Limit)
+        Uint32 elapsed = SDL_GetTicks() - start;
+        if (elapsed < m_maxFrameRate){
+            SDL_Delay(m_maxFrameRate - elapsed);
+        }
+
     }
+}
+
+void SDLApp::SetMaxFrameRate(int fr){
+    m_maxFrameRate = fr;
 }
 
 void SDLApp::StopAppLoop() {
@@ -58,3 +74,10 @@ int SDLApp::GetMouseY(){
     return m_mouseY;
 }
 
+int SDLApp::GetWindowWidth(){
+    return m_width;
+}
+
+int SDLApp::GetWindowHeight(){
+    return m_height;
+}

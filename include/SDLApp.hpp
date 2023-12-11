@@ -20,6 +20,11 @@ class SDLApp {
 
         void RunLoop();
 
+        // Set the maximum render rate of each frame
+        // This is a frame cap in terms of milliseconds that
+        // each iteration of our main loop will not exceed.
+        void SetMaxFrameRate(int fr);
+
         void StopAppLoop();
 
         SDL_Renderer* GetRenderer() const;
@@ -28,11 +33,17 @@ class SDLApp {
 
         int GetMouseY();
 
+        int GetWindowWidth();
+
+        int GetWindowHeight();
+
     private:
         // Pointer to our SDL Window
         SDL_Window* m_window = nullptr;
         // Pointer to our SDL renderer
         SDL_Renderer* m_renderer = nullptr;
+        // Set the maximum frame cap
+        int m_maxFrameRate;
         // Infinite loop for our application
         bool m_gameIsRunning = true;
         // Store our callback function
@@ -41,6 +52,9 @@ class SDLApp {
         // Mouse coordinates
         int m_mouseX;
         int m_mouseY;
+        // Window dimensions;
+        int m_width;
+        int m_height;
 
 };
 

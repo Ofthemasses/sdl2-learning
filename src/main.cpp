@@ -55,10 +55,12 @@ void HandleEvents(){
         }
         if(event.type == SDL_MOUSEBUTTONDOWN){
             if(event.button.button == SDL_BUTTON_LEFT){
+                app->SetMaxFrameRate(4);
                 rectangle3->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
                 rectangle4->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
             }
             else if(event.button.button == SDL_BUTTON_RIGHT){
+                app->SetMaxFrameRate(16);
                 rectangle3->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_BLEND);
                 rectangle4->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_BLEND);
             }
@@ -76,11 +78,6 @@ void HandleRendering(){
     // Give us a clear "canvas"
     SDL_SetRenderDrawColor(renderer, 0, 0, 0xFF, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
-
-    // int w,h;
-    // SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-    // Change this at some point, it is a hack to slow down the sim
-    SDL_Delay(20);
 
     rectangle->GetSprite()->SetX(rectangle->GetSprite()->GetX()+1+1/3);
     if (rectangle->GetSprite()->GetX() > 639){
@@ -108,6 +105,35 @@ void HandleRendering(){
     if (redRec->GetSprite()->IsColliding(*redRec2->GetSprite())){
         std::cout << "redRec is colliding with redRec2" << std::endl;
     }
+
+    // Create moving target
+    static int posX = 80;
+    static int posY = 80;
+    static bool up = true;
+    static bool right = true;
+
+    if (up){
+        posY--;
+    } else {
+        posY++;
+    }
+
+    if (right){
+        posX++;
+    } else {
+        posX--;
+    }
+
+    if(posX > app->GetWindowWidth() - 80 || posX < 80){
+        right = !right;
+    }
+
+    if(posY > app->GetWindowHeight() - 80 || posY < 80){
+        up = !up;
+    }
+
+    redRec->GetSprite()->SetX(posX);
+    redRec->GetSprite()->SetY(posY);
     // SDL_RenderDrawRect(renderer,&rectangle);
     rectangle->GetSprite()->Render(*renderer);
     rectangle2->GetSprite()->Render(*renderer);
@@ -116,6 +142,9 @@ void HandleRendering(){
     redRec->GetSprite()->Render(*renderer);
     redRec2->GetSprite()->Render(*renderer);
     SDL_RenderCopy(renderer, textureText, NULL, &textRect);
+
+   
+    
 
     static int frameNumber = 0;
 
@@ -126,7 +155,6 @@ void HandleRendering(){
     // Finally show what we've drawn
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(50);
     //glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     //
     //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -139,7 +167,7 @@ int main(int argc, char* argv[]){
     const char* title = "New SDL2 Abstraction";
     app = new SDLApp(title, 20, 20, 640, 480);
     SDL_Renderer* renderer = app->GetRenderer();
-    
+    app->SetMaxFrameRate(16);
 
     TTF_Font* ourFont = TTF_OpenFont("./assets/fonts/Fira_Code/FiraCode-VariableFont_wght.ttf", 128);
 
