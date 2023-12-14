@@ -17,6 +17,10 @@ class TexturedRectangle{
 
         int GetY();
 
+        int GetWidth();
+
+        int GetHeight();
+
         void SetX(int x);
 
         void SetY(int y);
@@ -28,8 +32,6 @@ class TexturedRectangle{
         void SetBlendMode(SDL_Renderer& renderer, SDL_BlendMode bm);
 
         void Update();
-
-        SDL_bool IsColliding(TexturedRectangle& obj);
 
         void Render(SDL_Renderer& renderer);
 

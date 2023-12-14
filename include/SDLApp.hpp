@@ -15,6 +15,8 @@ class SDLApp {
         ~SDLApp();
 
         void SetEventCallback(std::function<void(void)> func);
+        
+        void SetUpdateCallback(std::function<void(void)> func);
 
         void SetRenderCallback(std::function<void(void)> func);
 
@@ -48,6 +50,7 @@ class SDLApp {
         bool m_gameIsRunning = true;
         // Store our callback function
         std::function<void(void)> m_EventCallback;
+        std::function<void (void)> m_UpdateCallback;
         std::function<void(void)> m_RenderCallback;
         // Mouse coordinates
         int m_mouseX;

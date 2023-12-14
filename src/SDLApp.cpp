@@ -34,6 +34,10 @@ void SDLApp::SetEventCallback(std::function<void(void)> func){
     m_EventCallback = func;
 }
 
+void SDLApp::SetUpdateCallback(std::function<void(void)> func){
+    m_UpdateCallback = func;
+}
+
 void SDLApp::SetRenderCallback(std::function<void(void)> func){
     m_RenderCallback = func;
 }
@@ -44,6 +48,7 @@ void SDLApp::RunLoop(){
         Uint32 buttons;
         buttons = SDL_GetMouseState(&m_mouseX, &m_mouseY);
         m_EventCallback();
+        m_UpdateCallback();
         m_RenderCallback(); 
         // Frame Capping (Hard Limit)
         Uint32 elapsed = SDL_GetTicks() - start;

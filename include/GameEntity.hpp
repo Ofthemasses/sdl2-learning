@@ -4,38 +4,29 @@
 #include <string>
 
 #include <SDL2/SDL.h>
-
 #include "TexturedRectangle.hpp"
+#include "Collider2D.hpp"
 
 class GameEntity {
     public:
-        GameEntity() {
-            m_sprite = nullptr;
-        }
-        GameEntity(SDL_Renderer* renderer, std::string spritepath){
-            m_renderer = renderer;
-            m_sprite = new TexturedRectangle(*m_renderer, spritepath);
-        }
-        ~GameEntity(){}
+        GameEntity();
+        GameEntity(SDL_Renderer* renderer, std::string spritepath);
 
-        void RebindRenderer(SDL_Renderer* renderer){
-            m_renderer = renderer;
-        }
+        ~GameEntity();
 
-        void Update(){}
+        void RebindRenderer(SDL_Renderer* renderer);
 
-        void Render(){
-            if(nullptr == m_sprite){ // Why is this safer than m_sprite == nullptr?
-                m_sprite->Render(*m_renderer);
-            }
-        }
+        void Update();
 
-        TexturedRectangle* GetSprite(){
-            return m_sprite;
-        }
+        void Render();
+
+        TexturedRectangle* GetSprite();
+
+        Collider2D* GetCollider2D();
 
     private:
        TexturedRectangle* m_sprite;
+       Collider2D* m_collider;
        SDL_Renderer* m_renderer;
 };
 

@@ -102,7 +102,7 @@ void HandleRendering(){
     redRec2->GetSprite()->SetX(app->GetMouseX());
     redRec2->GetSprite()->SetY(app->GetMouseY());
 
-    if (redRec->GetSprite()->IsColliding(*redRec2->GetSprite())){
+    if (redRec->GetCollider2D()->IsColliding(*redRec2->GetCollider2D())){
         std::cout << "redRec is colliding with redRec2" << std::endl;
     }
 
@@ -163,6 +163,11 @@ void HandleRendering(){
 
 }
 
+void HandleUpdate(){
+    redRec->Update();
+    redRec2->Update();
+}
+
 int main(int argc, char* argv[]){
     const char* title = "New SDL2 Abstraction";
     app = new SDLApp(title, 20, 20, 640, 480);
@@ -221,6 +226,7 @@ int main(int argc, char* argv[]){
 
     app->SetRenderCallback(HandleRendering);
     // Gives YCM error "No viable conversion from 'void ()' to 'std::function<void ()>'"
+    app->SetUpdateCallback(HandleUpdate);
     app->SetEventCallback(HandleEvents);
 
     app->RunLoop();
