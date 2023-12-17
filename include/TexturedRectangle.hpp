@@ -11,7 +11,13 @@ class TexturedRectangle{
         TexturedRectangle(SDL_Renderer& renderer, std::string filepath);
         ~TexturedRectangle();
 
+        std::string getImageFilePath();
+
         void SetRectangleProperties(int x, int y, int w, int h);
+
+        void SetPosition(int x, int y);
+
+        void SetDimensions(int w, int h);
 
         int GetX();
 
@@ -39,6 +45,7 @@ class TexturedRectangle{
        inline SDL_Rect GetRectangle() const { return m_rectangle; }
        SDL_Rect m_rectangle;
        SDL_Texture* m_texture;
+       std::string m_fp;
 };
 
 #endif

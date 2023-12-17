@@ -2,43 +2,33 @@
 #define COLLIDER2D_HPP
 
 #include <SDL2/SDL.h>
+#include "Vector2D.hpp"
 
-class Collider2D{
+class ICollider2D{
     public:
-        Collider2D(){
-            m_colliderRectangle.x = 0;
-            m_colliderRectangle.y = 0;
-            m_colliderRectangle.w = 0;
-            m_colliderRectangle.h = 0;
-        }
+        virtual void Update()=0;
+        virtual void Render()=0;
+};
 
-        ~Collider2D(){}
+class BoxCollider2D : public ICollider2D {
+    public:
+        BoxCollider2D();
 
-        SDL_Rect& GetColliderBoundingBox(){
-            return m_colliderRectangle;
-        }
-        SDL_bool IsColliding(Collider2D& collider) {
-            const SDL_Rect temp = collider.m_colliderRectangle;
-            return SDL_HasIntersection(&m_colliderRectangle, &temp);
-        }
+        ~BoxCollider2D();
 
-        void SetAbsolutePosition(int x, int y){
-            m_colliderRectangle.x = x;
-            m_colliderRectangle.y = y;
-        }
+        SDL_Rect& GetColliderBoundingBox();
 
-        void SetDimensions(int w, int h){
-            m_colliderRectangle.w = w;
-            m_colliderRectangle.h = h;
-        }
+        SDL_bool IsColliding(BoxCollider2D& collider);
 
-        void Update(){
-            // not really needed, for consistency of API
-        }
+        void SetAbsolutePosition(int x, int y);
 
-        void Render(){
+        void SetDimensions(int w, int h);
 
-        }
+        Vector2D SetBoundingBoxAutomatically(SDL_Surface* surface, Uint8 r, Uint8 g, Uint8 b);
+
+        void Update();
+
+        void Render();
 
     private:
         SDL_Rect m_colliderRectangle;

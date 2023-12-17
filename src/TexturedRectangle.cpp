@@ -7,6 +7,7 @@
 #include "ResourceManager.hpp"
 
 TexturedRectangle::TexturedRectangle(SDL_Renderer& renderer, std::string filepath){
+    m_fp = filepath;
     SDL_Surface* surface = ResourceManager::GetInstance().GetSurface(filepath);
     m_texture = SDL_CreateTextureFromSurface(&renderer, surface);
     // Resource Manager should Free Resources
@@ -15,9 +16,23 @@ TexturedRectangle::~TexturedRectangle(){
     SDL_DestroyTexture(m_texture);
 }
 
+std::string TexturedRectangle::getImageFilePath(){
+    return m_fp;
+}
+
 void TexturedRectangle::SetRectangleProperties(int x, int y, int w, int h){
     m_rectangle.x = x;
     m_rectangle.y = y;
+    m_rectangle.w = w;
+    m_rectangle.h = h;
+}
+
+void TexturedRectangle::SetPosition(int x, int y){
+    m_rectangle.x = x;
+    m_rectangle.y = y;
+}
+
+void TexturedRectangle::SetDimensions(int w, int h){
     m_rectangle.w = w;
     m_rectangle.h = h;
 }

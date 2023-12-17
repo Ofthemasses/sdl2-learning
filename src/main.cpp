@@ -102,7 +102,7 @@ void HandleRendering(){
     redRec2->GetSprite()->SetX(app->GetMouseX());
     redRec2->GetSprite()->SetY(app->GetMouseY());
 
-    if (redRec->GetCollider2D()->IsColliding(*redRec2->GetCollider2D())){
+    if (redRec->GetBoxCollider2D(0)->IsColliding(*redRec2->GetBoxCollider2D(0))){
         std::cout << "redRec is colliding with redRec2" << std::endl;
     }
 
@@ -164,8 +164,8 @@ void HandleRendering(){
 }
 
 void HandleUpdate(){
-    redRec->Update();
-    redRec2->Update();
+    redRec->AutoBoxUpdate();
+    redRec2->AutoBoxUpdate();
 }
 
 int main(int argc, char* argv[]){
@@ -203,9 +203,11 @@ int main(int argc, char* argv[]){
 
     redRec = new GameEntity(renderer, "./assets/images/Red.bmp");
     redRec->GetSprite()->SetRectangleProperties(300,220,40,40);
+    redRec->AddBoxCollider2D();
 
     redRec2 = new GameEntity(renderer, "./assets/images/Red.bmp");
     redRec2->GetSprite()->SetRectangleProperties(0,0,40,40);
+    redRec2->AddBoxCollider2D();
 
     textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
     SDL_FreeSurface(surfaceText);
