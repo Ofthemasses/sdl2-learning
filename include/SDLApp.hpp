@@ -10,7 +10,7 @@
 
 class SDLApp {
     public:
-        SDLApp(const char* title, int x, int y, int w, int h);
+        SDLApp(Uint32 subsystemFlags, const char* title, int x, int y, int w, int h);
 
         ~SDLApp();
 

@@ -16,6 +16,7 @@
 #include "TexturedRectangle.hpp"
 #include "AnimatedSprite.hpp"
 #include "GameEntity.hpp"
+#include "Sound.hpp"
 #include "SDLApp.hpp"
 
 // One possibility of creating as a global our app
@@ -33,6 +34,7 @@ GameEntity* redRec2;
 SDL_Texture* textureText;
 SDL_Rect textRect;
 AnimatedSprite* animatedSprite; // TODO Create abstraction for multiple texture types be hooked into GameEntities
+Sound* CollisionSound;
 
 void SetPixel(SDL_Surface* surface, unsigned int x, unsigned int y, uint8_t r, uint8_t g, uint8_t b){
     SDL_LockSurface(surface);
@@ -55,6 +57,10 @@ void HandleEvents(){
         }
         if(event.type == SDL_MOUSEBUTTONDOWN){
             if(event.button.button == SDL_BUTTON_LEFT){
+                if(redRec->GetBoxCollider2D(0)->IsColliding(*redRec2->GetBoxCollider2D(0))){
+                    std::cout << "redRec is colliding with redRec2" << std::endl;
+                    CollisionSound->PlaySound();
+                }
                 app->SetMaxFrameRate(4);
                 rectangle3->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
                 rectangle4->GetSprite()->SetBlendMode(*renderer, SDL_BLENDMODE_ADD);
@@ -101,10 +107,6 @@ void HandleRendering(){
 
     redRec2->GetSprite()->SetX(app->GetMouseX());
     redRec2->GetSprite()->SetY(app->GetMouseY());
-
-    if (redRec->GetBoxCollider2D(0)->IsColliding(*redRec2->GetBoxCollider2D(0))){
-        std::cout << "redRec is colliding with redRec2" << std::endl;
-    }
 
     // Create moving target
     static int posX = 80;
@@ -170,7 +172,7 @@ void HandleUpdate(){
 
 int main(int argc, char* argv[]){
     const char* title = "New SDL2 Abstraction";
-    app = new SDLApp(title, 20, 20, 640, 480);
+    app = new SDLApp(SDL_INIT_VIDEO | SDL_INIT_AUDIO, title, 20, 20, 640, 480);
     SDL_Renderer* renderer = app->GetRenderer();
     app->SetMaxFrameRate(16);
 
@@ -215,7 +217,6 @@ int main(int argc, char* argv[]){
     animatedSprite = new AnimatedSprite(renderer, "./assets/images/Mage.bmp"); 
     animatedSprite->Draw(576,416,64,64);
 
-
     //screen = SDL_GetWindowSurface(window);
 
     // Create a rectangle
@@ -226,6 +227,8 @@ int main(int argc, char* argv[]){
     textRect.h = 64;
 
 
+    CollisionSound = new Sound("./assets/sounds/qkey.wav");
+    CollisionSound->SetupDevice();
     app->SetRenderCallback(HandleRendering);
     // Gives YCM error "No viable conversion from 'void ()' to 'std::function<void ()>'"
     app->SetUpdateCallback(HandleUpdate);

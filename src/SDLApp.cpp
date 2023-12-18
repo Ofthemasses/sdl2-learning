@@ -1,13 +1,13 @@
 #include "SDLApp.hpp"
 #include <iostream>
 
-SDLApp::SDLApp(const char* title, int x, int y, int w, int h){
+SDLApp::SDLApp(Uint32 subsystemFlags, const char* title, int x, int y, int w, int h){
     m_width = w;
     m_height = h;
 
     m_maxFrameRate = 90;
 
-    if(SDL_Init(SDL_INIT_VIDEO) < 0){
+    if(SDL_Init(subsystemFlags) < 0){
         std::cout << "SDL could not be initialized: " <<
         SDL_GetError();
     } else {
